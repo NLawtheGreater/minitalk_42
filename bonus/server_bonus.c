@@ -20,11 +20,12 @@ static void	server_action(int sig, siginfo_t *info, void *context)
 	else if(sig == SIGUSR2)
 	{
 		//ft_printf("SIGUSR2 received\n");	
-		kill(info->si_pid, SIGUSR2);
+		kill(info->si_pid, SIGUSR1);
 		c <<= 1;
 		i++;
 	}
 	if (i == 8 && c)
+		kill(info->si_pid, SIGUSR2);
 		ft_putchar_fd(c, 1);
 		//ft_printf("%d\n", c);
 }
@@ -45,7 +46,7 @@ int	main(void)
 	if (sigaction(SIGUSR2, &gg, 0) == -1)
 		ft_printf("%s\n", errno);
 	while (1)
-		usleep(50);
+		pause();
 	//sigaction(SIGUSR1, );
 	return (0);
 }

@@ -6,9 +6,9 @@ static void	client_action(int sig, siginfo_t *info, void *context)
 	(void)info;
 	(void)context;
 	if (sig == SIGUSR1)
-		ft_printf("server received SIGUSR1\n");	
+		ft_printf("server received SIG\n");	
 	else if(sig == SIGUSR2)
-		ft_printf("server received SIGUSR2\n");
+		ft_printf("server received complete message\n");
 	usleep(50);
 }
 
@@ -52,7 +52,7 @@ void	send_string(char *p_str, int p_pid)
 int	main(int argc, char **argv)
 {
 	int					pid;
-	struct sigaction	gg;
+	struct sigaction	cl;
 
 	if (argc != 3)
 		return (1);
@@ -61,16 +61,18 @@ int	main(int argc, char **argv)
 		ft_putendl_fd("Not support file descriptor 0.", 1);
 		return (0);
 	}*/
-	sigemptyset(&gg.sa_mask);
+	sigemptyset(&cl.sa_mask);
 		//ft_printf("yay\n");
-	gg.sa_sigaction = client_action;
-	gg.sa_flags = SA_SIGINFO | SA_NODEFER ;
-	if (sigaction(SIGUSR1, &gg, 0) == -1)
+	cl.sa_sigaction = client_action;
+	cl.sa_flags = SA_SIGINFO | SA_NODEFER ;
+	if (sigaction(SIGUSR1, &cl, 0) == -1)
 		ft_printf("%s\n", errno);
-	if (sigaction(SIGUSR2, &gg, 0) == -1)
+	if (sigaction(SIGUSR2, &cl, 0) == -1)
 		ft_printf("%s\n", errno);
 	pid = ft_atoi(argv[1]);
 	//ft_printf("%i", pid);
 	send_string(argv[2], pid);
+	while(1)
+		pause();
 	return(0);
 }
