@@ -15,7 +15,8 @@
 
 NAME1	= server
 NAME2	= client
-BONUS_NAME	= 
+BONUS_NAME1	= server_bonus
+BONUS_NAME2	= client_bonus
 
 ### DIR ###
 # all the dir to neatly keep your .c and .h
@@ -42,7 +43,8 @@ TESTER4		=
 SRC1	=	server.c
 SRC2	=	client.c
 
-BONUS	=	
+BONUS1	=	server_bonus.c
+BONUS2	=	client_bonus.c
 
 SHARE	=
 
@@ -50,14 +52,16 @@ SHARE	=
 # DO NOT CHANGE
 SRCS1		= ${addprefix ${DIRSRC}, ${SRC1}}
 SRCS2		= ${addprefix ${DIRSRC}, ${SRC2}}
-BONUS_SRCS	= ${addprefix ${BONUS_DIR}, ${BONUS}}
+BONUS_SRCS1	= ${addprefix ${BONUS_DIR}, ${BONUS1}}
+BONUS_SRCS2	= ${addprefix ${BONUS_DIR}, ${BONUS2}}
 SHARE_SRCS	= ${addprefix ${SHARE_DIR}, ${SHARE}}
 
 ### OBJECT FILE ###
 # DO NOT CHANGE
 OBJS1		= ${SRCS1:.c=.o}
 OBJS2		= ${SRCS2:.c=.o}
-BONUS_OBJS	= ${BONUS_SRCS:.c=.o}
+BONUS_OBJS1	= ${BONUS_SRCS1:.c=.o}
+BONUS_OBJS2	= ${BONUS_SRCS2:.c=.o}
 SHARE_OBJS	= ${SHARE_SRCS:.c=.o}
 
 ## LIBFT TARGET ##
@@ -85,13 +89,6 @@ MSG = "Upload to git"
 
 ### RULES ###
 
-.c.o:	${HEAD} ${LIBDIR} ${DIRSRC} ${SHARE_DIR}
-	@mkdir -p ${addprefix ${BUILD}, ${DIRSRC}}
-	@mkdir -p ${addprefix ${BUILD}, ${SHARE_DIR}}
-	@mkdir -p ${addprefix ${BUILD}, ${BONUS_DIR}}
-	${CC} ${CFLAGS} -I ${LIBDIR} -I ${HEAD} \
-	 -c $< -o ${addprefix ${BUILD}, ${<:.c=.o}}
-
 all:	${NAME1} ${NAME2}
 
 ${NAME1}:	${OBJS1} ${SHARE_OBJS} ${LIBFT} 
@@ -106,12 +103,22 @@ ${NAME2}:	${OBJS2} ${SHARE_OBJS} ${LIBFT}
 
 ${LIBFT}:
 	make -C ${LIBDIR}
-	cp ${LIBFT} ${NAME}
+	cp ${LIBFT} ${NAME1}
+	cp ${LIBFT} ${NAME2}
 
-bonus:	${BONUS_OBJS} ${SHARE_OBJS} ${LIBFT}
-	@${CC} ${CFLAGS} ${addprefix ${BUILD}, ${BONUS_OBJS}} ${addprefix ${BUILD}, ${SHARE_OBJS}}\
-	${LIBFT} -o ${BONUS_NAME}
-	@echo "$(GREEN)${BONUS_NAME}$(NOC)"
+.c.o:	${HEAD} ${LIBDIR} ${DIRSRC} ${SHARE_DIR} ${BONUS_DIR}
+	@mkdir -p ${addprefix ${BUILD}, ${DIRSRC}}
+	@mkdir -p ${addprefix ${BUILD}, ${SHARE_DIR}}
+	@mkdir -p ${addprefix ${BUILD}, ${BONUS_DIR}}
+	${CC} ${CFLAGS} -I ${LIBDIR} -I ${HEAD} \
+	 -c $< -o ${addprefix ${BUILD}, ${<:.c=.o}}
+	 
+bonus:	${BONUS_OBJS1} ${BONUS_OBJS2} ${SHARE_OBJS} ${LIBFT}
+	@${CC} ${CFLAGS} ${addprefix ${BUILD}, ${BONUS_OBJS1}} ${addprefix ${BUILD}, ${SHARE_OBJS}}\
+	${LIBFT} -o ${NAME1}
+	@${CC} ${CFLAGS} ${addprefix ${BUILD}, ${BONUS_OBJS2}} ${addprefix ${BUILD}, ${SHARE_OBJS}}\
+	${LIBFT} -o ${NAME2}
+	@echo "$(GREEN)BONUS DONE$(NOC)"
 
 clean:
 	@echo "$(RED)clean$(NOC)"
@@ -120,7 +127,7 @@ clean:
 
 fclean:	clean
 	@echo "$(RED)fclean$(NOC)"
-	${RM} ${NAME} ${BONUS_NAME}
+	${RM} ${NAME1} ${NAME2} ${BONUS_NAME}
 	make fclean -C ${LIBDIR} 
 
 re:	fclean all
