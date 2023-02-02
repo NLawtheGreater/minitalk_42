@@ -1,45 +1,45 @@
 #include "minitalk.h"
 
-unsigned char	*globe_argv[2];
+char	*globe_argv[2];
 
-void	send_character(unsigned char p_c, int p_pid)
+void	send_character(unsigned char p_c, int p_pid, int shift)
 {
 	//ft_printf("%c\n", p_c);
 	//ft_printf("%i\n", p_pid);
 	unsigned char c;
-	int	shift;
 
-	shift = 7;
-	while(shift >= 0)
-	{
-		c = p_c >> shift--;
-		c <<= 7;
-		if (c == 128)
-			{
-			kill(p_pid, SIGUSR1);
-			//ft_printf("%i\n", c);
-			}
-		else
+	c = p_c >> shift;
+	c <<= 7;
+	if (c == 128)
 		{
-			kill(p_pid, SIGUSR2);
-			//ft_printf("%i\n", c);
+		kill(p_pid, SIGUSR1);
+		//ft_printf("%i\n", c);
 		}
+	else
+	{
+		kill(p_pid, SIGUSR2);
+		//ft_printf("%i\n", c);
 	}
 }
 void	send_string()
 {
-	static int		char_count = -1;
+	static int		char_count ;
 	static int		str_num = 0;
 	static int		serv_pid = 0;
+	static int		shift = 7;
+
+	if (shift == -1)
+		char_count++;
+	if (shift < 0)
+		shift = 7;
 	if (serv_pid == 0)
-		serv_pid == ft_atoi(globe_argv[0]);
+		serv_pid = ft_atoi(globe_argv[0]);
 	if (str_num == 0)
 		str_num = (int) ft_strlen(globe_argv[1]);
-	//if (char_count == -1)
-	char_count++;
 	if (char_count > str_num)
 		exit (0);
-	send_character(globe_argv[1][char_count], serv_pid);
+	send_character(globe_argv[1][char_count], serv_pid, shift--);
+	//shift--;
 	usleep(5);
 }
 
@@ -58,7 +58,6 @@ static void	client_action(int sig, siginfo_t *info, void *context)
 
 int	main(int argc, char **argv)
 {
-	int	pid;
 	struct sigaction	cl;
 
 	if (argc != 3)
@@ -66,7 +65,6 @@ int	main(int argc, char **argv)
 		ft_putstr_fd("parameters incorrect", 1);
 		return (1);
 	}
-	getpid();
 	cl.sa_sigaction = client_action;	
 	cl.sa_flags = SA_SIGINFO | SA_NODEFER;
 	if (sigaction(SIGUSR1, &cl, 0) == -1)

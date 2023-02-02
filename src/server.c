@@ -7,7 +7,6 @@ static void	server_action(int sig, siginfo_t *info, void *context)
 	static unsigned char	c = 0;
 
 	//usleep(100);
-	(void)info;
 	(void)context;
 	if (i >= 8)
 		i = 0;
@@ -26,7 +25,10 @@ static void	server_action(int sig, siginfo_t *info, void *context)
 	if (i == 8 && c)
 		ft_putchar_fd(c, 1);
 		//ft_printf("%d\n", c);
-	kill(info->si_pid, SIGUSR1);	
+	if (i == 8 && !c)
+		kill(info->si_pid, SIGUSR2);
+	else
+		kill(info->si_pid, SIGUSR1);	
 }
 
 int	main(void)
