@@ -1,4 +1,5 @@
 #include "minitalk.h"
+#include <signal.h>
 
 
 static void	server_action(int sig, siginfo_t *info, void *context)
@@ -23,12 +24,13 @@ static void	server_action(int sig, siginfo_t *info, void *context)
 	}
 	i++;
 	if (i == 8 && c)
+	{
 		ft_putchar_fd(c, 1);
+		kill(info->si_pid, SIGUSR1);
+	}
 		//ft_printf("%d\n", c);
-	if (i == 8 && !c)
+	else if (i == 8 && !c)
 		kill(info->si_pid, SIGUSR2);
-	else
-		kill(info->si_pid, SIGUSR1);	
 }
 
 int	main(void)
@@ -43,12 +45,12 @@ int	main(void)
 	sigemptyset(&gg.sa_mask);
 		//ft_printf("yay\n");
 	gg.sa_sigaction = server_action;
-	gg.sa_flags = SA_SIGINFO | SA_NODEFER | SA_RESTART;
+	gg.sa_flags = SA_SIGINFO | SA_NODEFER ;
 	if (sigaction(SIGUSR1, &gg, 0) == -1)
 		ft_printf("%s\n", errno);
 	if (sigaction(SIGUSR2, &gg, 0) == -1)
 		ft_printf("%s\n", errno);
-	if (1)
+	while (1)
 		pause();
 	//sigaction(SIGUSR1, );
 	return (0);

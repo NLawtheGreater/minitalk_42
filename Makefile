@@ -71,7 +71,7 @@ LIBFT	= ${LIBDIR}libft.a
 # the compilation flag that will we will use for the project
 
 CC	= gcc
-CFLAGS	= -g -Wall -Wextra -Werror
+CFLAGS	= -g -Wall -Wextra -Werror -std=gnu99
 RM	= rm -f
 
 ### COLORS ###
