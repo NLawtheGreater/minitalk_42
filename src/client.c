@@ -7,14 +7,15 @@ void	send_character(unsigned char p_c, int p_pid)
 {
 	//ft_printf("%c\n", p_c);
 	//ft_printf("%i\n", p_pid);
-	unsigned int c;
+	unsigned char c;
 	int shift;
 
 	shift = 7;
 	while (shift >= 0)
 	{
 	c = p_c >> shift--;
-	if (c == 1)
+	c << 7;
+	if (c == 128)
 		{
 		kill(p_pid, SIGUSR1);
 		//ft_printf("%i\n", c);
