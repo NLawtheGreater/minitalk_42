@@ -1,6 +1,7 @@
 #include "minitalk.h"
 #include <signal.h>
 
+
 void	send_character(int p_pid, unsigned char p_c, int shift)
 {
 
@@ -43,20 +44,19 @@ void	send_string(int pid, char *p_string)
 		serv_pid = pid;
 	}
 	if (str_num == 0)
-		str_num = (int) ft_strlen(str);
+		str_num = (int) ft_strlen(globe_argv[1]);
 	if (char_count > str_num)
 		exit (0);
-	send_character(serv_pid, str[char_count], shift--);
+	send_character(serv_pid, globe_argv[1][char_count], shift--);
 	//char_count++;
 }
 
 static void	client_action(int sig, siginfo_t *info, void *context)
 {
-	
 	(void)context;
-	if(sig == SIGUSR1 && info->si_pid)
+	if(sig == SIGUSR1 && info->si_pid == ft_atoi(globe_argv[0]))
 	{	
-		send_string(0, "");
+		send_string("", 0);
 		usleep(1);
 	}
 	else if (sig == SIGUSR2)
@@ -88,10 +88,12 @@ int	main(int argc, char **argv)
 		ft_putendl_fd("Not support file descriptor 0.", 1);
 		return (0);
 	}*/
+	globe_argv[0] = argv[1];
+	globe_argv[1] = argv[2];
 	//ft_printf("%i", pid);
 
-	serv_pid = ft_atoi(argv[1]);
-	send_string(serv_pid, argv[2]);
+	serv_pid = ft_atoi(globe_argv[0]);
+	send_string(argv[2], serv_pid);
 	while(1)
 		pause();
 	return(0);
