@@ -52,8 +52,9 @@ void	send_string(int pid, char *p_string)
 
 static void	client_action(int sig, siginfo_t *info, void *context)
 {
+	
 	(void)context;
-	if(sig == SIGUSR1 && info->si_pid == ft_atoi(globe_argv[0]))
+	if(sig == SIGUSR1 && info->si_pid)
 	{	
 		send_string("", 0);
 		usleep(1);
