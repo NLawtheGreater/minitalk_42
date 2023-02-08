@@ -7,11 +7,9 @@ void	send_character(int p_pid, unsigned char p_c, int shift)
 	if (p_pid <= 0 || kill(p_pid, 0) < 0)
 	{
 		ft_putendl_fd("Invalid Process ID.", 1);
-		exit(0);
+		exit(1);
 	}
-	p_c = p_c >> shift;
-	p_c = p_c << 7;
-	if (p_c == 128)
+	if (p_c & (1 << shift))
 		{
 		kill(p_pid, SIGUSR1);
 		//ft_printf("%i\n", c);

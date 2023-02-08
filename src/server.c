@@ -4,35 +4,31 @@
 
 static void	server_action(int sig, siginfo_t *info, void *context)
 {
-	static int				i = 0;
+	static int				i = 7;
 	static unsigned char	c = 0;
 
 	//usleep(100);
 	(void)context;
-	if (i >= 8)
-		i = 0;
+	if (i <= -1)
+		i = 7;
 	if (sig == SIGUSR1)
 	{
 		//ft_printf("SIGUSR1 received\n");
-		c <<= 1;
-		c += 1;
+		c |= (1 << i--);
 	}
 	else if(sig == SIGUSR2)
 	{
 		//ft_printf("SIGUSR2 received\n");
-		c <<= 1;
+		c &= ~(1 << i--);
 	}
-	kill(info->si_pid, SIGUSR1);
-	i++;
-	if (i == 8 && c)
+	if (i <= -1 && c)
 	{
 		ft_putchar_fd(c, 1);
 	}
 		//ft_printf("%d\n", c);
-	else if (i == 8 && !c)
-	{
+	else if (i <= -1 && !c)
 		kill(info->si_pid, SIGUSR2);
-	}
+	kill(info->si_pid, SIGUSR1);
 }
 
 int	main(void)
