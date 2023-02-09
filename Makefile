@@ -40,8 +40,8 @@ TESTER4		=
 # the name of your .c go here. SRC is for mandatory, BONUS is for the bonus. 
 # SHARE is for .c file that your mandatory and bonus use. LIBFT is where your specific libft .c file go.
 
-SRC1	=	server.c
-SRC2	=	client.c
+SRC1	=	server3.c
+SRC2	=	client3.c
 
 BONUS1	=	server_bonus.c
 BONUS2	=	client_bonus.c
